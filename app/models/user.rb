@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   include ActiveModel::SecurePassword
   has_one_attached :profile_picture
+  has_many :posts
   has_secure_password
 
   validates_presence_of :first_name, :last_name, :username, :email 
