@@ -4,6 +4,10 @@ class UsersController < ApplicationController
 
     skip_before_action :authorized, only: [:create]
 
+    def show 
+        @user = find_user
+        render json: @user, status: :ok
+    end
 
     def create
         params = user_params.except(:profile_picture)
