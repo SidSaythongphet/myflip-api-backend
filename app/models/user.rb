@@ -1,8 +1,18 @@
 class User < ApplicationRecord
   include ActiveModel::SecurePassword
-  has_one_attached :profile_picture
-  has_many :posts
   has_secure_password
+  has_one_attached :profile_picture
+  has_many :posts, dependent: :destroy
+  has_many :comments, dependent: :destroy
+
+  has_many :followships, dependent: :destroy
+
+  has_many :passive_followships, foreign_key: :followee_id, class_name: 'Followship', dependent: :destroy
+  has_many :followers, through: :passive_followships
+
+  has_many :active_followships, foreign_key: :follower_id, class_name: 'Followship', dependent: :destroy
+  has_many :followees, through: :active_followships
+
 
   validates_presence_of :first_name, :last_name, :username, :email 
   validates_uniqueness_of :username, :email, case_sensitive: false
@@ -16,6 +26,19 @@ class User < ApplicationRecord
     if profile_picture.attached?
       profile_picture.blob.url
     end
+  end
+
+  def follow(followee)
+    active_followships.create!(followee_id: followee.id)
+  end
+
+  def unfollow(followee)
+    @followship = active_followships.find_by(followee_id: followee.id)
+    @followship.destroy
+  end
+
+  def following?(followee)
+    self.followees.include?(followee)
   end
 
 end

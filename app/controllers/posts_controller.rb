@@ -2,8 +2,13 @@ class PostsController < ApplicationController
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
 
     def index
-        @posts = Post.all
-        render json: @posts, status: :ok
+        if params[:user_id]
+            user = User.find(params[:user_id])
+            @posts = user.posts
+        else
+            @posts = Post.all
+        end
+        render json: @posts, include: ['user', 'comments', 'comments.user'], status: :ok
     end
 
     def show

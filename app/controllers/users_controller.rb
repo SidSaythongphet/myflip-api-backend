@@ -4,6 +4,11 @@ class UsersController < ApplicationController
 
     skip_before_action :authorized, only: [:create]
 
+    def index
+        @users = User.all
+        render json: @users, status: :ok
+    end
+
     def show 
         @user = find_user
         render json: @user, status: :ok
@@ -19,10 +24,12 @@ class UsersController < ApplicationController
     end
 
     def update
-        profile_picture = params[:profile_picture]
+        new_profile_picture = params[:profile_picture]
         @user = find_user
-        @user.profile_picture.purge
-        @user.profile_picture.attach(profile_picture) if profile_picture.present?
+        if new_profile_picture.present?
+            @user.profile_picture.purge
+            @user.profile_picture.attach(new_profile_picture)
+        end
         if @user.update!(user_params)
           render json: @user, status: :accepted
         end

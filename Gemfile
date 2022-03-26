@@ -56,3 +56,5 @@ gem "active_model_serializers", "~> 0.10.13"
 gem "jwt", "~> 2.3"
 
 gem "byebug", "~> 11.1"
+
+gem "faker", "~> 2.20"
