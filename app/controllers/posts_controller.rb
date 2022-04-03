@@ -1,5 +1,6 @@
 class PostsController < ApplicationController
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
+    skip_before_action :authorized
 
     def index
         if params[:user_id]
@@ -8,7 +9,7 @@ class PostsController < ApplicationController
         else
             @posts = Post.all
         end
-        render json: @posts, include: ['user', 'comments', 'comments.user'], status: :ok
+        render json: @posts, include: ['user', 'comments', 'comments.user', 'likes'], status: :ok
     end
 
     def show

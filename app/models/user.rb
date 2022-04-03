@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_secure_password
   has_one_attached :profile_picture
   has_many :posts, dependent: :destroy
+  has_many :likes, dependent: :destroy
   has_many :comments, dependent: :destroy
 
   has_many :followships, dependent: :destroy
